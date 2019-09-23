@@ -1,9 +1,8 @@
 import React, {useContext} from 'react'
 
-import {Store, State, Dispatch} from './types'
+import {State, ContextProps} from './types'
 
 export const INITIAL_STATE: State = {
-  appPreferences: {},
   board: null,
   savedBoards: [],
   mode: null,
@@ -14,12 +13,9 @@ export const INITIAL_STATE: State = {
   error: null,
 }
 
-export const StoreContext = React.createContext<Store>({
-  getState: () => INITIAL_STATE,
-  dispatch: a => a,
+export const StateContext = React.createContext<ContextProps>({
+  ...INITIAL_STATE,
+  dispatch: () => {},
 })
 
-export const useAppState = (): State & {dispatch: Dispatch} => {
-  const {getState, dispatch} = useContext(StoreContext)
-  return {...getState(), dispatch}
-}
+export const useAppState = (): ContextProps => useContext(StateContext)

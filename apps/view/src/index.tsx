@@ -4,19 +4,19 @@ import './styles'
 
 Promise.all([
   import('react-dom'),
+  import('./state/StateProvider'),
   import('./App'),
-  import('./state/StoreProvider'),
 ]).then(imports => {
   const [
     {default: ReactDom},
+    {default: StateProvider},
     {default: App},
-    {default: StoreProvider},
   ] = imports
 
   ReactDom.hydrate(
-    <StoreProvider>
+    <StateProvider>
       <App />
-    </StoreProvider>,
+    </StateProvider>,
     document.querySelector('[data-hook=root]')
   )
 })

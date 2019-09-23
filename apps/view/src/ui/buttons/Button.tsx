@@ -10,7 +10,7 @@ export type ButtonProps = {
   type?: 'button' | 'submit' | 'reset'
 }
 
-export const BUTTON_CLASSNAME = 'br2'
+export const BUTTON_CLASSNAME = 'bn pa0 br2 color-inherit bg-transparent'
 
 export function getButtonStyle(props: ButtonProps): string {
   return cx(

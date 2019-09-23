@@ -1,6 +1,6 @@
 // database types
 import Dexie from 'dexie'
-import {Board, Layer, Omit, AppPreferences} from '../types'
+import {Board, Layer, Omit} from '../types'
 
 export type DbBoard = Omit<Board, 'layers'>
 
@@ -16,10 +16,4 @@ export class BoardDatabase extends Dexie {
   layers: Dexie.Table<DbLayer, string>
 
   sources: Dexie.Table<DbSource, string>
-}
-
-export type DbAppPreferences = AppPreferences
-
-export class AppDatabase extends Dexie {
-  preferences: Dexie.Table<DbAppPreferences, number>
 }

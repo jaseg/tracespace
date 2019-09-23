@@ -22,7 +22,7 @@ function App(): JSX.Element {
         ? Array.from(event.dataTransfer.files)
         : Array.from(event.target.files || [])
 
-    if (files.length > 0) dispatch(createBoard(files, 'dataTransfer' in event))
+    if (files.length > 0) dispatch(createBoard(files))
     if ('value' in event.target) event.target.value = ''
     preventDefault(event)
   }

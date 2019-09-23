@@ -176,7 +176,6 @@ export function stackupToBoardRender(
     top: stackup.top.svg,
     bottom: stackup.bottom.svg,
     layers: stackupToLayerRenders(stackup, board),
-    sourceIds: board.layerIds.map(id => board.layers[id].sourceId),
     sourceUrl: board.sourceUrl || null,
   }
 }

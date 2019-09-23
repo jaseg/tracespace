@@ -1,5 +1,4 @@
 import {LogLevel, Logger, LogHandler} from './types'
-import {Middleware} from './state'
 
 const STORAGE_KEY = 'logLevel'
 const DEFAULT_LEVEL = process.env.NODE_ENV !== 'production' ? 'debug' : 'warn'
@@ -7,23 +6,14 @@ const LEVELS: Array<LogLevel> = ['debug', 'info', 'warn', 'error']
 
 let minLevel: LogLevel
 
-const log: Logger = {
+const logger: Logger = {
   debug: createLogHandler('debug'),
   info: createLogHandler('info'),
   warn: createLogHandler('warn'),
   error: createLogHandler('error'),
 }
 
-export default log
-
-export const createLogMiddleware = (): Middleware => {
-  return store => next => action => {
-    const result = next(action)
-    log.debug('action', action)
-    log.debug('next state', store.getState())
-    return result
-  }
-}
+export default logger
 
 function createLogHandler(level: LogLevel): LogHandler {
   if (!minLevel) minLevel = readLogLevel()
