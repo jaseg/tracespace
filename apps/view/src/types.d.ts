@@ -77,7 +77,7 @@ export type LayerRender = {
 export type BoardOptions = {
   useOutline: boolean
   outlineGapFill: number
-  color: Pick<Color, 'sm' | 'ss' | 'cf'>
+  color: Pick<Color, 'sm' | 'ss' | 'cf' | 'cu' | 'sp' | 'out' | 'fr4'>
 }
 
 export type LayerOptions = {

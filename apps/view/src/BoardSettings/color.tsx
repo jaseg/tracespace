@@ -18,31 +18,55 @@ type ColorPreset = {
 type ColorId = keyof BoardColor
 
 const DEFAULT_COLOR_PRESET: BoardColor = {
+  fr4: '#b7c4c8',
+  cf: '#cc9933',
+  sm: '#000000',
+  ss: '#ff0000',
+  cu: '#ffffff',
+  sp: '#dddddd',
+  out: '#002255',
+}
+
+const UPSTREAM_COLOR_PRESET: BoardColor = {
+  fr4: '#666666',
   cf: '#cc9933',
   sm: '#004200',
   ss: '#ffffff',
+  cu: '#cccccc',
+  sp: '#999999',
+  out: '#000000',
 }
 
 const OSH_PARK_COLOR_PRESET: BoardColor = {
+  fr4: '#666666',
   cf: '#cc9933',
   sm: '#4b0082',
   ss: '#ffffff',
+  cu: '#cccccc',
+  sp: '#999999',
+  out: '#000000',
 }
 
 const SPARKFUN_COLOR_PRESET: BoardColor = {
+  fr4: '#666666',
   cf: '#f5f5f5',
   sm: '#cc0000',
   ss: '#ffffff',
+  cu: '#cccccc',
+  sp: '#999999',
+  out: '#000000',
 }
+
 
 const COLOR_PRESETS: Array<ColorPreset> = [
   {title: 'default', color: DEFAULT_COLOR_PRESET},
+  {title: 'upstream', color: UPSTREAM_COLOR_PRESET},
   {title: 'OSH Park', color: OSH_PARK_COLOR_PRESET},
   {title: 'SparkFun', color: SPARKFUN_COLOR_PRESET},
 ]
 
-const COLOR_IDS: Array<ColorId> = ['sm', 'ss', 'cf']
-const COLOR_NAMES = {sm: 'soldermask', ss: 'silkscreen', cf: 'copper finish'}
+const COLOR_IDS: Array<ColorId> = ['sm', 'ss', 'cf', 'cu', 'sp', 'out', 'fr4']
+const COLOR_NAMES = {sm: 'soldermask', ss: 'silkscreen', cf: 'copper finish', cu: 'copper', sp: 'solder paste', out: 'outline', 'fr4': 'pcb core'}
 
 // TOCO(mc, 2019-03-01): move opacity entirely to pcb-stackup-core
 const stripAlpha = (c: string): string => c.slice(0, 7)

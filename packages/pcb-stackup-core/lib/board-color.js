@@ -6,13 +6,13 @@ var colorString = require('color-string')
 var LAYER_IDS = ['fr4', 'cu', 'cf', 'sm', 'ss', 'sp', 'out']
 
 var DEFAULTS = {
-  fr4: '#666666',
-  cu: '#cccccc',
+  fr4: '#b7c4c8',
+  cu: '#ffffff',
   cf: '#cc9933',
-  sm: '#004200bf',
-  ss: '#ffffff',
-  sp: '#999999',
-  out: '#000000',
+  sm: '#000000',
+  ss: '#ff0000',
+  sp: '#dddddd',
+  out: '#002255',
 }
 
 function getColor(overrides) {

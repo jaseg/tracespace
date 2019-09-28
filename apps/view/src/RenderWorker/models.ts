@@ -79,19 +79,10 @@ export async function boardToStackups(
 }
 
 export async function stackupToZipBlob(stackup: Stackup): Promise<Blob> {
-  const files = stackup.layers
-    .filter(layer => layer.converter.layer.length > 0)
-    .reduce(
-      (result, layer) =>
-        result.concat({
-          name: `${layer.filename}.svg`,
-          contents: render(layer.converter, layer.options.id),
-        }),
-      [
+  const files = [
         {name: 'top.svg', contents: stackup.top.svg},
         {name: 'bottom.svg', contents: stackup.bottom.svg},
       ]
-    )
 
   return writeFiles(files)
 }

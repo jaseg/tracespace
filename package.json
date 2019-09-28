@@ -7,6 +7,7 @@
     "coverage": "nyc report --reporter=lcov",
     "start": "lerna run start --parallel",
     "build": "lerna run build --parallel",
+    "tarball": "lerna run build --parallel && tar -caf tracespace-dist.tar.gz -C apps/view dist",
     "serve": "lerna run serve --parallel",
     "build:all": "npm run build && npm run example && npm run docs",
     "lint": "eslint \".*.js\" \"**/*.@(js|ts|tsx)\"",

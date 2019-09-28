@@ -73,11 +73,13 @@ module.exports = function gatherLayers(
       if (!id) {
         id = getUniqueId(layer.type)
         defs.push(
-          wrapLayer(element, id, converter, getScale(units, converter.units))
+          wrapLayer(element, {id: id}, converter, getScale(units, converter.units))
         )
       }
 
-      collection.push({type: layer.type, id: id})
+      collection.push({type: layer.type, id: id, makeCopy: function (attr) {
+          return wrapLayer(element, attr, converter, getScale(units, converter.units))
+      }})
     }
   }
 
@@ -85,6 +87,7 @@ module.exports = function gatherLayers(
   drills.forEach(wrapConverterLayer(drillIds))
 
   var outlineId
+  var copyOutline
 
   // add the outline to defs if it's not defined externally or if we're using it to clip
   if (outline) {
@@ -96,12 +99,16 @@ module.exports = function gatherLayers(
       defs.push(
         wrapLayer(
           element,
-          outlineId,
+          {id: outlineId},
           outline.converter,
           getScale(units, outline.converter.units),
           useOutline ? 'clipPath' : 'g'
         )
       )
+
+      copyOutline = function (attr) {
+        return wrapLayer(element, attr, outline.converter, getScale(units, outline.converter.units))
+      }
     }
   }
 
@@ -112,6 +119,7 @@ module.exports = function gatherLayers(
     layerIds: layerIds,
     drillIds: drillIds,
     outlineId: outlineId,
+    copyOutline: copyOutline,
   }
 }
 

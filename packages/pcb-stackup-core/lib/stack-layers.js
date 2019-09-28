@@ -13,7 +13,8 @@ module.exports = function(
   layers,
   drills,
   outline,
-  useOutline
+  useOutline,
+  copyPads
 ) {
   var classPrefix = id + '_'
   var idPrefix = id + '_' + side + '_'
@@ -38,34 +39,35 @@ module.exports = function(
 
   // build the layer starting with an fr4 rectangle the size of the viewbox
   var layer = [createRect(element, box, 'currentColor', classPrefix + 'fr4')]
-  var cuLayerId = findLayerId(layers, wtg.TYPE_COPPER)
-  var smLayerId = findLayerId(layers, wtg.TYPE_SOLDERMASK)
-  var ssLayerId = findLayerId(layers, wtg.TYPE_SILKSCREEN)
-  var spLayerId = findLayerId(layers, wtg.TYPE_SOLDERPASTE)
+  var copies = []
+  var cuLayer = findLayer(layers, wtg.TYPE_COPPER)
+  var smLayer = findLayer(layers, wtg.TYPE_SOLDERMASK)
+  var ssLayer = findLayer(layers, wtg.TYPE_SILKSCREEN)
+  var spLayer = findLayer(layers, wtg.TYPE_SOLDERPASTE)
   var outLayerId = layerProps.outlineId
 
   // add copper and copper finish
-  if (cuLayerId) {
+  if (cuLayer.id) {
     var cfMaskId = idPrefix + 'cf-mask'
-    var cfMaskShape = smLayerId
-      ? [useLayer(element, smLayerId)]
+    var cfMaskShape = smLayer.id
+      ? [useLayer(element, smLayer.id)]
       : [createRect(element, box)]
     var cfMaskGroupAttr = {fill: '#fff', stroke: '#fff'}
     var cfMaskGroup = [element('g', cfMaskGroupAttr, cfMaskShape)]
 
     defs.push(element('mask', {id: cfMaskId}, cfMaskGroup))
-    layer.push(useLayer(element, cuLayerId, classPrefix + 'cu'))
-    layer.push(useLayer(element, cuLayerId, classPrefix + 'cf', cfMaskId))
+    layer.push(useLayer(element, cuLayer.id, classPrefix + 'cu'))
+    layer.push(useLayer(element, cuLayer.id, classPrefix + 'cf', cfMaskId))
   }
 
   // add soldermask and silkscreen
   // silkscreen will not be added if no soldermask, because that's how it works in RL
-  if (smLayerId) {
+  if (smLayer.id) {
     // solder mask is... a mask, so mask it
     var smMaskId = idPrefix + 'sm-mask'
     var smMaskShape = [
       createRect(element, box, '#fff'),
-      useLayer(element, smLayerId),
+      useLayer(element, smLayer.id),
     ]
     var smMaskGroupAtrr = {fill: '#000', stroke: '#000'}
     var smMaskGroup = [element('g', smMaskGroupAtrr, smMaskShape)]
@@ -74,20 +76,21 @@ module.exports = function(
 
     // add the layer that gets masked
     var smGroupAttr = {mask: 'url(#' + smMaskId + ')'}
-    var smGroupShape = [
-      createRect(element, box, 'currentColor', classPrefix + 'sm'),
-    ]
+    var smGroupShape = []
+    if (!copyPads) {
+      smGroupShape.push(createRect(element, box, 'currentColor', classPrefix + 'sm'))
+    }
 
-    if (ssLayerId) {
-      smGroupShape.push(useLayer(element, ssLayerId, classPrefix + 'ss'))
+    if (ssLayer.id) {
+      smGroupShape.push(useLayer(element, ssLayer.id, classPrefix + 'ss'))
     }
 
     layer.push(element('g', smGroupAttr, smGroupShape))
   }
 
   // add solderpaste
-  if (spLayerId) {
-    layer.push(useLayer(element, spLayerId, classPrefix + 'sp'))
+  if (spLayer.id) {
+    layer.push(useLayer(element, spLayer.id, classPrefix + 'sp'))
   }
 
   // add board outline if necessary
@@ -95,24 +98,41 @@ module.exports = function(
     layer.push(useLayer(element, outLayerId, classPrefix + 'out'))
   }
 
+  var outline
+  if (copyPads) {
+    if (smLayer.id) {
+      copies.push(smLayer.makeCopy({id: idPrefix + 'sm-copy', fill: 'currentColor', stroke: 'currentColor', class: classPrefix + 'sm'}))
+    }
+
+    if (spLayer.id) {
+      copies.push(spLayer.makeCopy({id: idPrefix + 'sp-copy', fill: 'currentColor', stroke: 'currentColor', class: classPrefix + 'sp'}))
+    }
+
+    if (layerProps.copyOutline && useOutline) {
+      outline = layerProps.copyOutline({id: idPrefix + 'out-copy', fill: 'none', stroke: 'currentColor', class: classPrefix + 'out' + ' ' + 'board-outline'})
+    }
+  }
+
   return {
     defs: defs,
     layer: layer,
+    copies: copies,
     mechMaskId: mechMaskId,
     outClipId: outLayerId && useOutline ? outLayerId : null,
+    outline: outline,
     box: box,
     units: units,
   }
 }
 
-function findLayerId(layers, type) {
+function findLayer(layers, type) {
   var layer
   var i
 
   for (i = 0; i < layers.length; i++) {
     layer = layers[i]
     if (layer.type === type) {
-      return layer.id
+      return layer
     }
   }
 }
